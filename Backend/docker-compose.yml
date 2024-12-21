@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13  # Usando a imagem oficial do PostgreSQL
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: user_learnup      # Usuário do banco de dados
+      POSTGRES_PASSWORD: $7%8-:r>x3  # Senha do banco de dados
+      POSTGRES_DB: db_learnup       # Nome do banco de dados
+    ports:
+      - "5432:5432"  # Mapeando a porta 5432 para acessar o banco no host
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Persistência de dados entre reinícios
+
+  # Caso você queira rodar o backend no Docker também
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgres://user_example:password_example@db/db_example
+
+volumes:
+  postgres_data:
